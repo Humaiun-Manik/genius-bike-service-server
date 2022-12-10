@@ -38,6 +38,7 @@ async function run() {
     await client.connect();
     const serviceCollection = client.db("geniusBike").collection("services");
     const orderCollection = client.db("geniusBike").collection("order");
+    const expertCollection = client.db("geniusBike").collection("experts");
 
     // AUTH
     app.post("/login", async (req, res) => {
@@ -78,6 +79,21 @@ async function run() {
       const query = { _id: ObjectId(id) };
       const result = await serviceCollection.deleteOne(query);
       res.send(result);
+    });
+
+    // expert collection API
+    app.get("/expert", async (req, res) => {
+      const query = {};
+      const cursor = expertCollection.find(query);
+      const experts = await cursor.toArray();
+      res.send(experts);
+    });
+    // get one expert
+    app.get("/expert/:id", async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const expert = await expertCollection.findOne(query);
+      res.send(expert);
     });
 
     // order collection API
